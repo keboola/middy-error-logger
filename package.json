@@ -1,0 +1,43 @@
+{
+  "name": "@keboola/middy-error-logger",
+  "version": "1.0.0",
+  "description": "Error logger middleware for Middy",
+  "repository": "https://github.com/keboola/middy-error-logger",
+  "author": "Jakub Matejka <jakub@keboola.com>",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "lodash": "^4.17.10"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/plugin-transform-runtime": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/runtime": "^7.1.2",
+    "babel-core": "^7.0.0-bridge",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^23.6.0",
+    "eslint": "^5.4.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "http-errors": "^1.7.1",
+    "jest": "^23.6.0",
+    "middy": "^0.19.1",
+    "mocha": "^5.1.1",
+    "unexpected": "^10.37.7"
+  },
+  "scripts": {
+    "test:lint": "./node_modules/.bin/eslint src",
+    "test:unit": "./node_modules/.bin/jest --bail",
+    "test": "yarn test:lint && yarn test:unit",
+    "prepack:babel": "./node_modules/.bin/babel src/ -d lib",
+    "prepack": "yarn prepack:babel"
+  },
+  "files": [
+    "lib"
+  ],
+  "main": "dist/errorLogger.js"
+}
