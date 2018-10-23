@@ -1,6 +1,6 @@
 {
   "name": "@keboola/middy-error-logger",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Error logger middleware for Middy",
   "repository": "https://github.com/keboola/middy-error-logger",
   "author": "Jakub Matejka <jakub@keboola.com>",
@@ -33,11 +33,11 @@
     "test:lint": "./node_modules/.bin/eslint src",
     "test:unit": "./node_modules/.bin/jest --bail",
     "test": "yarn test:lint && yarn test:unit",
-    "prepack:babel": "./node_modules/.bin/babel src/ -d lib",
+    "prepack:babel": "./node_modules/.bin/babel src/ -d dist",
     "prepack": "yarn prepack:babel"
   },
   "files": [
-    "lib"
+    "dist"
   ],
   "main": "dist/errorLogger.js"
 }
