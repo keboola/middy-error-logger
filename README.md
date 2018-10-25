@@ -1,6 +1,6 @@
 ## Error Logger Middleware for Middy
 
-[![Build Status](https://travis-ci.org/keboola/middy-error-logger.svg?branch=master)](https://travis-ci.org/keboola/storage-api-js-client)
+[![Build Status](https://travis-ci.org/keboola/middy-error-logger.svg?branch=master)](https://travis-ci.org/keboola/middy-error-logger)
 
 Errors logging middleware for [Middy](https://middy.js.org/).
 
