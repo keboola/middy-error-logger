@@ -23,7 +23,7 @@ describe('Error Handler for Middy', () => {
 
   test('App error', () => {
     const handler = middy(() => {
-      throw new Error('error');
+      throw new Error('custom error');
     });
 
     handler
@@ -32,7 +32,7 @@ describe('Error Handler for Middy', () => {
     // run the handler
     handler({}, {}, (error, response) => {
       expect(response).toBe(undefined);
-      expect(error.message).toEqual('error');
+      expect(error.message).toEqual('Internal Error');
     });
   });
 
