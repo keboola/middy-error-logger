@@ -1,8 +1,8 @@
+/* eslint-disable no-console,no-underscore-dangle,no-param-reassign */
 import _ from 'lodash';
 
 export default function errorLoggerMiddleware(opts) {
   const defaults = {
-    // eslint-disable-next-line no-console
     logger: console.error,
   };
 
@@ -30,9 +30,7 @@ export default function errorLoggerMiddleware(opts) {
       }
 
 
-      // eslint-disable-next-line no-underscore-dangle
       if (handler.error.constructor.super_ && handler.error.constructor.super_.name === 'HttpError') {
-        // eslint-disable-next-line no-param-reassign
         handler.response = {
           statusCode: _.get(handler, 'error.statusCode', 500),
           body: JSON.stringify({
@@ -44,6 +42,7 @@ export default function errorLoggerMiddleware(opts) {
         return next();
       }
 
+      handler.error.message = 'Internal Error';
       return next(handler.error);
     },
   };
