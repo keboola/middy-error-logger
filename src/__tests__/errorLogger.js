@@ -1,9 +1,9 @@
 import createError from 'http-errors';
-import middy from 'middy';
+import middy from '@middy/core';
 import errorLogger from '../errorLogger';
 
 describe('Error Handler for Middy', () => {
-  test('User error', () => {
+  test('User error', async () => {
     const handler = middy(() => {
       throw new createError.UnprocessableEntity();
     });
@@ -12,16 +12,14 @@ describe('Error Handler for Middy', () => {
       .use(errorLogger({ logger: false }));
 
     // run the handler
-    handler({}, {}, (_, response) => {
-      expect(_).toBe(null);
-      expect(response).toEqual({
-        statusCode: 422,
-        body: '{"errorMessage":"Unprocessable Entity","errorCode":422,"requestId":null}',
-      });
+    const response = await handler({}, {});
+    expect(response).toEqual({
+      statusCode: 422,
+      body: '{"errorMessage":"Unprocessable Entity","errorCode":422,"requestId":null}',
     });
   });
 
-  test('App error', () => {
+  test('App error', async () => {
     const handler = middy(() => {
       throw new Error('custom error');
     });
@@ -30,13 +28,14 @@ describe('Error Handler for Middy', () => {
       .use(errorLogger({ logger: false }));
 
     // run the handler
-    handler({}, {}, (error, response) => {
-      expect(response).toBe(undefined);
+    try {
+      await handler({}, {});
+    } catch (error) {
       expect(error.message).toEqual('Internal Error');
-    });
+    }
   });
 
-  test('Custom logger function', () => {
+  test('Custom logger function', async () => {
     const logger = jest.fn();
 
     const handler = middy(() => {
@@ -47,8 +46,7 @@ describe('Error Handler for Middy', () => {
       .use(errorLogger({ logger }));
 
     // run the handler
-    handler({}, {}, () => {
-      expect(logger).toHaveBeenCalled();
-    });
+    await handler({}, {});
+    expect(logger).toHaveBeenCalled();
   });
 });

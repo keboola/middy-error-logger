@@ -1,49 +1,47 @@
 /* eslint-disable no-console,no-underscore-dangle,no-param-reassign */
 import _ from 'lodash';
+import { isHttpError } from 'http-errors';
 
 export default function errorLoggerMiddleware(opts) {
   const defaults = {
     logger: console.error,
   };
 
-  const options = Object.assign({}, defaults, opts);
+  const options = { ...defaults, ...opts };
 
   return {
-    onError: (handler, next) => {
+    onError: (request) => {
       if (typeof options.logger === 'function') {
         options.logger(JSON.stringify({
-          message: _.isString(handler.error) ? handler.error : _.get(handler, 'error.message', null),
-          statusCode: _.get(handler, 'error.statusCode', 500),
-          stack: _.get(handler, 'error.stack', null),
+          message: _.isString(request.error) ? request.error : _.get(request, 'error.message', null),
+          statusCode: _.get(request, 'error.statusCode', 500),
+          stack: _.get(request, 'error.stack', null),
           event: {
-            resource: _.get(handler, 'event.resource', null),
-            httpMethod: _.get(handler, 'event.httpMethod', null),
-            queryStringParameters: _.get(handler, 'event.queryStringParameters', null),
-            body: _.get(handler, 'event.body', null),
+            resource: _.get(request, 'event.resource', null),
+            httpMethod: _.get(request, 'event.httpMethod', null),
+            queryStringParameters: _.get(request, 'event.queryStringParameters', null),
+            body: _.get(request, 'event.body', null),
           },
           context: {
-            sourceIp: _.get(handler, 'event.requestContext.identity.sourceIp', null),
-            userAgent: _.get(handler, 'event.requestContext.identity.userAgent', null),
+            sourceIp: _.get(request, 'event.requestContext.identity.sourceIp', null),
+            userAgent: _.get(request, 'event.requestContext.identity.userAgent', null),
           },
-          awsRequestId: _.get(handler, 'context.awsRequestId', null),
+          awsRequestId: _.get(request, 'context.awsRequestId', null),
         }));
       }
 
-
-      if (handler.error.constructor.super_ && handler.error.constructor.super_.name === 'HttpError') {
-        handler.response = {
-          statusCode: _.get(handler, 'error.statusCode', 500),
+      if (isHttpError(request.error)) {
+        request.response = {
+          statusCode: _.get(request, 'error.statusCode', 500),
           body: JSON.stringify({
-            errorMessage: handler.error.message,
-            errorCode: handler.error.statusCode,
-            requestId: _.get(handler, 'context.awsRequestId', null),
+            errorMessage: request.error.message,
+            errorCode: request.error.statusCode,
+            requestId: _.get(request, 'context.awsRequestId', null),
           }),
         };
-        return next();
+      } else {
+        request.error.message = 'Internal Error';
       }
-
-      handler.error.message = 'Internal Error';
-      return next(handler.error);
     },
   };
 }
