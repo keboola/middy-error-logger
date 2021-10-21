@@ -5,6 +5,27 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      is_semantic_tag: ${{ steps.tag.outputs.is_semantic_tag }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set tag
+        id: tag
+        run: |
+          TAG="${GITHUB_REF##*/}"
+          IS_SEMANTIC_TAG=$(echo "$TAG" | grep -q '^v\?[0-9]\+\.[0-9]\+\.[0-9]\+$' && echo true || echo false)
+          echo "Tag = '$TAG', is semantic tag = '$IS_SEMANTIC_TAG'"
+          echo "::set-output name=is_semantic_tag::$IS_SEMANTIC_TAG"
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Lint
+        run: yarn test:lint
+
+  tests:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [12.x, 14.x]
@@ -21,7 +42,7 @@ jobs:
         run: yarn install
 
       - name: Test
-        run: yarn run test
+        run: yarn test:unit
 
   publish:
     runs-on: ubuntu-latest
