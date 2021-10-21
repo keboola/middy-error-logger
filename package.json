@@ -1,6 +1,6 @@
 {
   "name": "@keboola/middy-error-logger",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Error logger middleware for Middy",
   "repository": "https://github.com/keboola/middy-error-logger",
   "author": "Jakub Matejka <jakub@keboola.com>",
