@@ -60,3 +60,7 @@ And return this message to the request response:
 ```
 
 If the error is not an instance from `http-errors`, the error message in the response is replaced with "Internal Error." and the status code is set to 500.
+
+## License
+
+MIT licensed, see [LICENSE](./LICENSE) file.
